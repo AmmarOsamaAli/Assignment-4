@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UOB Student Nationalities</title>
+    <!-- Pico CSS Framework for styling -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        /* Custom styles for table overflow */
+        .table-container {
+            overflow: auto;
+            max-height: 80vh;
+            /* Limits the height of the table */
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <h1>UOB Student Nationality Data</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Semester</th>
+                        <th>The Programs</th>
+                        <th>Nationality</th>
+                        <th>Colleges</th>
+                        <th>Number of Students</th>
+                    </tr>
+                </thead>
+                <tbody id="student-data">
+                    <!-- Data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        // Fetching the API endpoint
+        const apiUrl = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
+
+        // Function to fetch and display data
+        async function fetchData() {
+            try {
+                // Fetch API request
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // Target the table body
+                const tableBody = document.getElementById("student-data");
+
+                // Parse and map the data
+                data.results.forEach(record => {
+                    const row = `
+                        <tr>
+                            <td>${record.year}</td>
+                            <td>${record.semester}</td>
+                            <td>${record.the_programs}</td>
+                            <td>${record.nationality}</td>
+                            <td>${record.colleges}</td>
+                            <td>${record.number_of_students}</td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML("beforeend", row);
+                });
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Call the fetchData function when the page loads
+        fetchData();
+    </script>
+</body>
+
+</html>
